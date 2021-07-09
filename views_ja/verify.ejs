@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>認証システム</title>
+    <link type='text/css' rel="stylesheet" href="../css/style.css">
+    <script type='text/javascript' src="../js/jquery.min.js"></script>
+    <script type='text/javascript' src="../js/particleground.min.js"></script>
+    <script type='text/javascript' src="../js/particles.js"></script>
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+  </head>
+  <body>
+    <div id="particles"></div>
+    <div id="app">
+      <form action="?" method="POST" id="hCaptcha">
+        <div class="h-captcha" data-sitekey="<%= siteKey %>" data-callback="onSubmit"></div>
+      </form>
+    </div>
+    <script>
+      function onSubmit() {
+        document.getElementById("hCaptcha").submit();
+      }
+    </script>
+  </body>
+</html>
