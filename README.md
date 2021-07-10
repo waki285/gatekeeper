@@ -46,7 +46,7 @@ Rest assured ... these are really easy!
       ```env
       token=YOUR_SUPER_SECRET_TOKEN
       ```
-      or replit...
+      or replit...  
       ![Replit env image](https://media.discordapp.net/attachments/815719965221978117/862851865828917248/unknown.png)
 
     1. Let's change the contents of `config.json`.  
@@ -73,7 +73,7 @@ Rest assured ... these are really easy!
       secret_key=YOUR_SUPER_SECRET_KEY
       ```
 
-      or replit...
+      or replit...  
       ![replit_env_sitekey_image](https://media.discordapp.net/attachments/824067194396737557/862859475638419476/unknown.png)
       ![replit_env_secretkey_image](https://media.discordapp.net/attachments/824067194396737557/862859717210013706/unknown.png)
   
@@ -150,7 +150,7 @@ yarn install
       ```env
       token=とーくん
       ```
-      Replitなら...
+      Replitなら...  
       ![Replit env image](https://media.discordapp.net/attachments/815719965221978117/862851865828917248/unknown.png)
 
     1. `config.json`の中身を変えよう！  
@@ -177,7 +177,7 @@ yarn install
       secret_key=超スーパーシークレットキー
       ```
 
-      Replitなら...
+      Replitなら...  
       ![replit_env_sitekey_image](https://media.discordapp.net/attachments/824067194396737557/862859475638419476/unknown.png)
       ![replit_env_secretkey_image](https://media.discordapp.net/attachments/824067194396737557/862859717210013706/unknown.png)
   
@@ -190,7 +190,7 @@ yarn install
   (もし認証パネルが出てこない場合、トラブルシューティングセクションに写ってください。)
 
 ### 🔫 トラブルシューティング
-* !verify`を打っても認証パネルが出てこない
+* `!verify`を打っても認証パネルが出てこない
   * まず落ち着いて、Botに`チャンネルを見る`、`メッセージを送信`、`埋め込みリンク`と`メッセージの履歴を見る`権限がこのチャンネルで許可されてることを確認してね!
   * 打ち間違いしてない?`!verifi`とか、`1verify`、`"verify`とかね。
   * Botのプレフィックス変えてない?
