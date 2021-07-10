@@ -1,0 +1,34 @@
+{
+  "domain": "gatekeeper.waki285.repl.co",
+  "memo_domain": [
+    "Your Domain(not include http://)", 
+    "あなたの認証に使用するドメイン(http://は入れないでね) "
+  ],
+
+  "guild_id": "123456789012345678",
+  "memo_guild_id": [
+    "Your server id", 
+    "あなたのサーバーID"
+  ],
+
+  "role_id": ["123456789012345678"],
+  "memo_role_id": [
+    "Verified role id. You can multiple.(e.x. [”123456789012345678”, ”901234567890123456”] (don't copy.Please replace ” with double quotes))", 
+    "認証されたあとに付与されるロールID。複数指定できます。(例: [”123456789012345678”, ”901234567890123456”] (これそのままコピーしないでね、”をダブルクオーテーションに置き換えてね))"
+  ],
+
+  "use_button": true,
+  "memo_use_button": [
+    "Do you want use The Message Component. In case of false, I'm using reaction.",
+    "ボタンで認証するか。falseにした場合、リアクションでの認証になります。"
+  ],
+
+  "bot_owner_id": ["123456789012345678"],
+  "memo_bot_owner_id": [
+    "The ID of the account who puts the authentication panel on this bot. The authentication panel cannot be placed unless the person who executed the verify command has this ID. You can multiple.",
+    "このBotで認証パネルを置く人のID。verifyコマンドを実行した人がこのIDじゃないと認証パネルが置けません。複数人指定できます。"
+  ],
+  
+  "use_japanese": true,
+  "memo_use_japanese": "If you use English, set it to false"
+}
