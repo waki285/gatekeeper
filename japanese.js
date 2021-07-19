@@ -37,6 +37,7 @@ client.on('ready', () => {
   logger.success(`${client.user.tag}でログイン完了！！`);
 });
 client.on('message', async message => {
+  if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
   const args = message.content
     .slice(prefix.length)
