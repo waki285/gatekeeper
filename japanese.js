@@ -149,6 +149,10 @@ app.post("/verify/:verifyId?", async (req, res) => {
   }
 });
 
+if (!process.env['site_key'] || !process.env['secret_key']) {
+  logger.fatal("hCaptchaのサイトキー/シークレットがありません！");
+  process.exit(1)
+}
 
 app.listen(80, () => logger.success("サーバーが稼働しました！"))
 client.login(process.env['token'])
