@@ -149,6 +149,11 @@ app.post("/verify/:verifyId?", async (req, res) => {
   }
 });
 
+if (!process.env['site_key'] || !process.env['secret_key']) {
+  logger.fatal("don't existing hCaptcha site_key or secret_key!");
+  process.exit(1)
+}
+
 
 app.listen(80, () => logger.success("Server Started"))
 client.login(process.env['token'])
