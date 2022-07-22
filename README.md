@@ -13,7 +13,7 @@ This repository is inspired of [nates](https://github.com/nates)/[ward](https://
 Thanks for nate!
 
 ### 🔌 Requirements
-* Node.js(Version 12.x or later)
+* Node.js(Version 16.9.x or later)
 * npm(or yarn)
 * Execution environment(I used replit)
 * expectations :D
@@ -117,7 +117,7 @@ _ If the problem persists, please let us know in [Issues](https://github.com/wak
 nateさんありがとう!
 
 ### 🔌 必要条件
-* Node.js(バージョン12.x以降)
+* Node.js(バージョン16.9.x以降)
 * npm(または yarn)
 * 開発環境(私はreplitを使用しています)
 * 完成したものへの期待()
