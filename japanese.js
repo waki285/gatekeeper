@@ -79,15 +79,15 @@ client.on('interactionCreate', async interaction => {
     const linkID = pool.createLink(interaction.user.id);
     const embed = new builders.EmbedBuilder()
       .setTitle('認証システム')
-      .setDescription(`次のリンクを15分以内に訪れて、認証してください。.\nhttps://${config['domain']}/verify/${linkID}`)
+      .setDescription(`次のリンクを15分以内に訪れて、認証してください。\nhttps://${config['domain']}/verify/${linkID}`)
       .setColor(3447003);
     interaction.user.send({embeds: [embed]}).then(() => {
       interaction.followUp("DMに送信しました。")
       logger.pending("DMにリンクを送信しました。認証を待っています。")
     })
     .catch(async () => {
-      logger.error(`${button.clicker.user.tag}にメッセージを送れませんでした！`);
-      interaction.followUp(`<@!${button.clicker.user.id}>さんにメッセージを送れませんでした。代わりにここにリンクを表示します。\nhttps://${config['domain']}/verify/${linkID}`)
+      logger.error(`${interaction.user.tag}にメッセージを送れませんでした！`);
+      interaction.followUp(`<@!${interaction.user.id}>さんにメッセージを送れませんでした。代わりにここにリンクを表示します。\nhttps://${config['domain']}/verify/${linkID}`)
       return;
     })
   }
@@ -107,7 +107,8 @@ client.on('messageReactionAdd', async (reaction,  user) => {
   user.send({embeds: [embed]}).then(async () => {
     const msg = await reaction.message.channel.send("DMに送信しました。");
     logger.pending("DMにリンクを送信しました。認証を待っています。")
-    msg.delete({ timeout: 3000 });
+    await sleep(3000)
+    msg.delete();
   })
   .catch(async () => {
     logger.error(`${user.tag}にメッセージを送れませんでした！`);
