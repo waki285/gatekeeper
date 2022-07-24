@@ -56,7 +56,7 @@ client.on('messageCreate', async message => {
         title: "About Verification",
         description: "Press the button below and an hCaptcha link for authentication will be sent to the DM.\nIf you do not receive the DM, please set the setting in the image below to 'ON'.\n(The site you received by DM may display 'deceptive site', but the site is safe, so select 'Details'-> 'visit this unsafe site'.)",
         image: {
-          url: "https://media.discordapp.net/attachments/798922824349646938/860768481245790248/unknown.png"
+          url: "https://media.discordapp.net/attachments/971215045314887680/1000593743612760214/unknown.png"
         },
         color: 0x00ff00
       }], components: [new discord.ActionRowBuilder().addComponents(button)]});
@@ -65,7 +65,7 @@ client.on('messageCreate', async message => {
         title: "About Verification",
         description: "Press the ✅ below and an hCaptcha link for authentication will be sent to the DM.\nIf you do not receive the DM, please set the setting in the image below to 'ON'.\n(The site you received by DM may display 'deceptive site', but the site is safe, so select 'Details'-> 'visit this unsafe site'.)",
         image: {
-          url: "https://media.discordapp.net/attachments/798922824349646938/860768481245790248/unknown.png"
+          url: "https://media.discordapp.net/attachments/971215045314887680/1000593743612760214/unknown.png"
         },
         color: 0x00ff00
       }]});
