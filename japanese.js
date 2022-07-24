@@ -2,9 +2,10 @@
 
 //定義
 
+const builders = require("@discordjs/builders")
 const discord = require("discord.js");
-const client = new discord.Client({partials: ["MESSAGE", "REACTION", "CHANNEL"]});
-const disbtn = require("discord.js-buttons")(client);
+const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMembers, discord.GatewayIntentBits.GuildMessages
+, discord.GatewayIntentBits.GuildMessageReactions, discord.GatewayIntentBits.MessageContent], partials: [discord.Partials.Message, discord.Partials.Reaction, discord.Partials.Channel]});
 
 require('dotenv').config();
 const express = require("express");
@@ -36,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 client.on('ready', () => {
   logger.success(`${client.user.tag}でログイン完了！！`);
 });
-client.on('message', async message => {
+client.on('messageCreate', async message => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
   const args = message.content
@@ -47,46 +48,46 @@ client.on('message', async message => {
   if (command === "verify") {
     if (!config['bot_owner_id'].includes(message.author.id)) return logger.warn("Botのオーナー以外がこのコマンドを実行しました。");
     if (config['use_button']) {
-      const button = new disbtn.MessageButton()
-        .setID("verify_ja")
-        .setStyle("green")
+      const button = new builders.ButtonBuilder()
+        .setCustomId("verify_ja")
+        .setStyle("Success")
         .setLabel("認証");
-      message.channel.send({embed: {
+      message.channel.send({embeds: [{
         title: "認証について",
         description: "下のボタンを押すと認証のためのhCaptchaリンクがDMに送信されます。\nDMが届かない方は、下画像の設定を「オン」にしてください。\n(DMで届いたサイト先で「安全ではありません」という表示が出ることがありますが、サイトは安全なので、「詳細」→「安全でないこのサイトにアクセス」をお選びください。)",
         image: {
           url: "https://media.discordapp.net/attachments/798922824349646938/860768481245790248/unknown.png"
         },
         color: 0x00ff00
-      }, buttons: [button]});
+      }], components: [new discord.ActionRowBuilder().addComponents(button)]});
     } else {
-      const msg = await message.channel.send({embed: {
+      const msg = await message.channel.send({embeds: [{
         title: "認証について",
         description: "下の✅を押すと認証のためのhCaptchaリンクがDMに送信されます。\nDMが届かない方は、下画像の設定を「オン」にしてください。\n(DMで届いたサイト先で「安全ではありません」という表示が出ることがありますが、サイトは安全なので、「詳細」→「安全でないこのサイトにアクセス」をお選びください。)",
         image: {
           url: "https://media.discordapp.net/attachments/798922824349646938/860768481245790248/unknown.png"
         },
         color: 0x00ff00
-      }});
+      }]});
       msg.react("✅");
     }
   }
 });
-client.on('clickButton', async button => {
-  await button.think(true);
-  if (button.id === "verify_ja") {
-    const linkID = pool.createLink(button.clicker.user.id);
-    const embed = new discord.MessageEmbed()
+client.on('interactionCreate', async interaction => {
+  if (interaction.type === discord.InteractionType.MessageComponent  && interaction.customId === "verify_ja") {
+    await interaction.deferReply({ ephemeral: true });
+    const linkID = pool.createLink(interaction.user.id);
+    const embed = new builders.EmbedBuilder()
       .setTitle('認証システム')
-      .setDescription(`次のリンクを15分以内に訪れて、認証してください。.\nhttps://${config['domain']}/verify/${linkID}`)
-      .setColor('BLUE');
-    button.clicker.user.send(embed).then(() => {
-    button.reply.edit("DMに送信しました。")
-    logger.pending("DMにリンクを送信しました。認証を待っています。")
+      .setDescription(`次のリンクを15分以内に訪れて、認証してください。\nhttps://${config['domain']}/verify/${linkID}`)
+      .setColor(3447003);
+    interaction.user.send({embeds: [embed]}).then(() => {
+      interaction.followUp("DMに送信しました。")
+      logger.pending("DMにリンクを送信しました。認証を待っています。")
     })
     .catch(async () => {
-      logger.error(`${button.clicker.user.tag}にメッセージを送れませんでした！`);
-      button.reply.edit(`<@!${button.clicker.user.id}>さんにメッセージを送れませんでした。代わりにここにリンクを表示します。\nhttps://${config['domain']}/verify/${linkID}`)
+      logger.error(`${interaction.user.tag}にメッセージを送れませんでした！`);
+      interaction.followUp(`<@!${interaction.user.id}>さんにメッセージを送れませんでした。代わりにここにリンクを表示します。\nhttps://${config['domain']}/verify/${linkID}`)
       return;
     })
   }
@@ -99,19 +100,21 @@ client.on('messageReactionAdd', async (reaction,  user) => {
   if (user.bot) return;
   await reaction.users.remove(user);
   const linkID = pool.createLink(user.id);
-  const embed = new discord.MessageEmbed()
+  const embed = new builders.EmbedBuilder()
     .setTitle('認証システム')
     .setDescription(`次のリンクを15分以内に訪れて、認証してください。.\nhttps://${config['domain']}/verify/${linkID}`)
-    .setColor('BLUE');
-  user.send(embed).then(async () => {
+    .setColor(3447003);
+  user.send({embeds: [embed]}).then(async () => {
     const msg = await reaction.message.channel.send("DMに送信しました。");
     logger.pending("DMにリンクを送信しました。認証を待っています。")
-    msg.delete({ timeout: 3000 });
+    await sleep(3000)
+    msg.delete();
   })
   .catch(async () => {
     logger.error(`${user.tag}にメッセージを送れませんでした！`);
     const msg = reaction.message.channel.send(`<@!${user.id}>さんにメッセージを送れませんでした。代わりにここにリンクを表示します。\nhttps://${config['domain']}/verify/${linkID}`);
-    msg.delete({ timeout: 10000 });
+    await sleep(10000)
+    msg.delete();
   });
 });
 
@@ -135,7 +138,7 @@ app.post("/verify/:verifyId?", async (req, res) => {
   if (!pool.isValidLink(req.params.verifyId)) return res.render("invalidLink", {});
   try {
     const guild = await client.guilds.cache.get(config['guild_id']);
-    const member = guild.member(pool.getDiscordId(req.params.verifyId));
+    const member = guild.members.cache.get(pool.getDiscordId(req.params.verifyId))
     const roles = config['role_id'];
     for (let roleid of roles) {
       member.roles.add(roleid);
