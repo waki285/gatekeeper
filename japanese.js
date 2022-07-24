@@ -2,8 +2,10 @@
 
 //定義
 
+const builders = require("@discordjs/builders")
 const discord = require("discord.js");
-const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMembers, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.GuildMessageReactions], partials: [discord.Partials.Message, discord.Partials.Reaction, discord.Partials.Channel]});
+const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMembers, discord.GatewayIntentBits.GuildMessages
+, discord.GatewayIntentBits.GuildMessageReactions, discord.GatewayIntentBits.MessageContent], partials: [discord.Partials.Message, discord.Partials.Reaction, discord.Partials.Channel]});
 
 require('dotenv').config();
 const express = require("express");
@@ -46,9 +48,9 @@ client.on('messageCreate', async message => {
   if (command === "verify") {
     if (!config['bot_owner_id'].includes(message.author.id)) return logger.warn("Botのオーナー以外がこのコマンドを実行しました。");
     if (config['use_button']) {
-      const button = new discord.MessageButton()
+      const button = new builders.ButtonBuilder()
         .setCustomId("verify_ja")
-        .setStyle("SUCCESS")
+        .setStyle("Success")
         .setLabel("認証");
       message.channel.send({embeds: [{
         title: "認証について",
@@ -57,7 +59,7 @@ client.on('messageCreate', async message => {
           url: "https://media.discordapp.net/attachments/798922824349646938/860768481245790248/unknown.png"
         },
         color: 0x00ff00
-      }], components: [new discord.MessageActionRow().addComponents(button)]});
+      }], components: [new discord.ActionRowBuilder().addComponents(button)]});
     } else {
       const msg = await message.channel.send({embeds: [{
         title: "認証について",
@@ -72,13 +74,13 @@ client.on('messageCreate', async message => {
   }
 });
 client.on('interactionCreate', async interaction => {
-  if (interaction.isButton() && interaction.customId === "verify_ja") {
+  if (interaction.type === discord.InteractionType.MessageComponent  && interaction.customId === "verify_ja") {
     await interaction.deferReply({ ephemeral: true });
     const linkID = pool.createLink(interaction.user.id);
-    const embed = new discord.MessageEmbed()
+    const embed = new builders.EmbedBuilder()
       .setTitle('認証システム')
       .setDescription(`次のリンクを15分以内に訪れて、認証してください。.\nhttps://${config['domain']}/verify/${linkID}`)
-      .setColor('BLUE');
+      .setColor(3447003);
     interaction.user.send({embeds: [embed]}).then(() => {
       interaction.followUp("DMに送信しました。")
       logger.pending("DMにリンクを送信しました。認証を待っています。")
@@ -98,10 +100,10 @@ client.on('messageReactionAdd', async (reaction,  user) => {
   if (user.bot) return;
   await reaction.users.remove(user);
   const linkID = pool.createLink(user.id);
-  const embed = new discord.MessageEmbed()
+  const embed = new builders.EmbedBuilder()
     .setTitle('認証システム')
     .setDescription(`次のリンクを15分以内に訪れて、認証してください。.\nhttps://${config['domain']}/verify/${linkID}`)
-    .setColor('BLUE');
+    .setColor(3447003);
   user.send({embeds: [embed]}).then(async () => {
     const msg = await reaction.message.channel.send("DMに送信しました。");
     logger.pending("DMにリンクを送信しました。認証を待っています。")
@@ -135,7 +137,7 @@ app.post("/verify/:verifyId?", async (req, res) => {
   if (!pool.isValidLink(req.params.verifyId)) return res.render("invalidLink", {});
   try {
     const guild = await client.guilds.cache.get(config['guild_id']);
-    const member = guild.member(pool.getDiscordId(req.params.verifyId));
+    const member = guild.members.cache.get(pool.getDiscordId(req.params.verifyId))
     const roles = config['role_id'];
     for (let roleid of roles) {
       member.roles.add(roleid);
